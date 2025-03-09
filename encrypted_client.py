@@ -1,15 +1,17 @@
-from cryptography.fernet import Fernet
-path = r'C:\Users\User\OneDrive\Desktop\לימודים\מועדון המתכנתים\sandbox\image.jpg'
-key = Fernet.generate_key()
-fernet = Fernet(key)
-print("encrypting...", path)
-file = open(path, "rb")
-data = file.read()
-print(data)
+from ExeSteganography import ExeSteganography
 
+# Create an instance
+stego = ExeSteganography()
 
+# Embed an executable
+stego.embed_exe(
+    image_path="path/to/carrier.png",
+    exe_path="path/to/program.exe",
+    output_path="path/to/output.png"
+)
 
-encrypted_data = fernet.encrypt(data)
-print(type(encrypted_data),"data:" , encrypted_data)
-file = fernet.decrypt(encrypted_data)
-print(type(file) ,"data:" , file)
+# Extract the executable
+stego.extract_exe(
+    stego_image_path="path/to/output.png",
+    output_exe_path="path/to/extracted.exe"
+)
